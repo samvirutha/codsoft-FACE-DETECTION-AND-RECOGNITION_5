@@ -1,0 +1,55 @@
+# FACE DETECTION AND RECOGNITION
+
+
+from google.colab import files
+uploaded = files.upload()
+
+
+import cv2
+from google.colab.patches import cv2_imshow
+
+# Get uploaded filename
+image_path = list(uploaded.keys())[0]
+
+# Read image
+img = cv2.imread(image_path)
+
+# Error check
+if img is None:
+    print("❌ Failed to load image.")
+else:
+    print("✅ Image loaded successfully.")
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    cv2_imshow(gray)
+
+
+import cv2
+from google.colab.patches import cv2_imshow
+
+# Load Haar cascade
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+# Load image
+image_path = list(uploaded.keys())[0]
+img = cv2.imread(image_path)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Detect faces with tuned parameters
+faces = face_cascade.detectMultiScale(
+    gray,
+    scaleFactor=1.05,
+    minNeighbors=3,
+    minSize=(30, 30)
+)
+
+# Draw rectangles
+for (x, y, w, h) in faces:
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+# Show result
+if len(faces) == 0:
+    print("😕 No faces detected.")
+else:
+    print(f"✅ Detected {len(faces)} face(s).")
+
+cv2_imshow(img)
